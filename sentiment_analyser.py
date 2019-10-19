@@ -59,7 +59,7 @@ def load_and_train_data():
 
     # Setup the DNN classifier
     estimator = tf.estimator.DNNClassifier(
-        hidden_units=[1024, 512, 256],
+        hidden_units=[512, 256],
         feature_columns=[embedded_text_feature_column],
         n_classes=3,
         dropout=0.2,

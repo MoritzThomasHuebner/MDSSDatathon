@@ -72,13 +72,11 @@ def load_and_train_data():
     print("Training set accuracy: {accuracy}".format(**train_eval_result))
     print("Test set accuracy: {accuracy}".format(**test_eval_result))
 
-<<<<<<< HEAD
+
     save_predicitions(estimator, "submission.csv")
 
-    return estimator
-=======
     return estimator, train_df, test_df, predict_train_input_fn, predict_test_input_fn
->>>>>>> 9262a320d58c055bd4701b48ce2f186f9cead29f
+
 
 
 def save_predicitions(estimator, sub_fn):
@@ -114,8 +112,6 @@ def make_confusion_matrix_plot(estimator, train_df, predict_train_input_fn):
     sns.heatmap(cm_out, annot=True, xticklabels=LABELS, yticklabels=LABELS)
     plt.xlabel("Predicted")
     plt.ylabel("True")
-<<<<<<< HEAD
-=======
     plt.show()
 
 
@@ -123,4 +119,4 @@ def make_confusion_matrix_plot(estimator, train_df, predict_train_input_fn):
 estimator, train_df, test_df, predict_train_input_fn, predict_test_input_fn = load_and_train_data()
 make_confusion_matrix_plot(estimator, train_df, predict_train_input_fn)
 make_confusion_matrix_plot(estimator, test_df, predict_test_input_fn)
->>>>>>> 9262a320d58c055bd4701b48ce2f186f9cead29f
+

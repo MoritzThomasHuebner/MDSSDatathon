@@ -12,6 +12,8 @@ import re
 import seaborn as sns
 from cleaning import get_training_and_testing_data
 
+import tf_mods
+
 
 # # Reduce logging output.
 # tf.logging.set_verbosity(tf.logging.ERROR)
@@ -32,9 +34,8 @@ def load_datasets():
 
 
 def load_and_train_data():
-    #train_df, test_df = load_datasets()
+    # train_df, test_df = load_datasets()
     train_df, test_df = get_training_and_testing_data('train_data.csv')
-
 
     # Format the data
     # Training input on the whole training set with no limit on training epochs.
@@ -52,7 +53,7 @@ def load_and_train_data():
     # Setup the 'feature'
     embedded_text_feature_column = hub.text_embedding_column(
         key='text',
-        module_spec="https://tfhub.dev/google/nnlm-en-dim128/1",
+        module_spec=tf_mods.NNLM,
         trainable=True)
 
     # Setup the DNN classifier
@@ -72,11 +73,9 @@ def load_and_train_data():
     print("Training set accuracy: {accuracy}".format(**train_eval_result))
     print("Test set accuracy: {accuracy}".format(**test_eval_result))
 
-
     save_predicitions(estimator, "submission.csv")
 
     return estimator, train_df, test_df, predict_train_input_fn, predict_test_input_fn
-
 
 
 def save_predicitions(estimator, sub_fn):
@@ -119,4 +118,3 @@ def make_confusion_matrix_plot(estimator, train_df, predict_train_input_fn):
 estimator, train_df, test_df, predict_train_input_fn, predict_test_input_fn = load_and_train_data()
 make_confusion_matrix_plot(estimator, train_df, predict_train_input_fn)
 make_confusion_matrix_plot(estimator, test_df, predict_test_input_fn)
-

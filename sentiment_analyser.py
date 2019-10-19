@@ -10,6 +10,7 @@ import os
 import pandas as pd
 import re
 import seaborn as sns
+from cleaning import get_training_and_testing_data
 
 
 # # Reduce logging output.
@@ -31,7 +32,9 @@ def load_datasets():
 
 
 def load_and_train_data():
-    train_df, test_df = load_datasets()
+    #train_df, test_df = load_datasets()
+    train_df, test_df = get_training_and_testing_data('train_data.csv')
+
 
     # Format the data
     # Training input on the whole training set with no limit on training epochs.
@@ -49,7 +52,8 @@ def load_and_train_data():
     # Setup the 'feature'
     embedded_text_feature_column = hub.text_embedding_column(
         key='text',
-        module_spec="https://tfhub.dev/google/nnlm-en-dim128/1")
+        module_spec="https://tfhub.dev/google/nnlm-en-dim128/1",
+        trainable=True)
 
     # Setup the DNN classifier
     estimator = tf.estimator.DNNClassifier(
@@ -60,7 +64,7 @@ def load_and_train_data():
 
     # Training for 1,000 steps means 128,000 training eg with the default batch size.
     # number epochs = 128,000/len(train)
-    estimator.train(input_fn=train_input_fn, steps=100)
+    estimator.train(input_fn=train_input_fn, steps=1000)
 
     train_eval_result = estimator.evaluate(input_fn=predict_train_input_fn)
     test_eval_result = estimator.evaluate(input_fn=predict_test_input_fn)
@@ -68,9 +72,13 @@ def load_and_train_data():
     print("Training set accuracy: {accuracy}".format(**train_eval_result))
     print("Test set accuracy: {accuracy}".format(**test_eval_result))
 
+<<<<<<< HEAD
     save_predicitions(estimator, "submission.csv")
 
     return estimator
+=======
+    return estimator, train_df, test_df, predict_train_input_fn, predict_test_input_fn
+>>>>>>> 9262a320d58c055bd4701b48ce2f186f9cead29f
 
 
 def save_predicitions(estimator, sub_fn):
@@ -106,3 +114,13 @@ def make_confusion_matrix_plot(estimator, train_df, predict_train_input_fn):
     sns.heatmap(cm_out, annot=True, xticklabels=LABELS, yticklabels=LABELS)
     plt.xlabel("Predicted")
     plt.ylabel("True")
+<<<<<<< HEAD
+=======
+    plt.show()
+
+
+# GET PREDICTION
+estimator, train_df, test_df, predict_train_input_fn, predict_test_input_fn = load_and_train_data()
+make_confusion_matrix_plot(estimator, train_df, predict_train_input_fn)
+make_confusion_matrix_plot(estimator, test_df, predict_test_input_fn)
+>>>>>>> 9262a320d58c055bd4701b48ce2f186f9cead29f

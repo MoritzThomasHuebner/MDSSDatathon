@@ -17,8 +17,8 @@ stop_words = set(stopwords.words('english'))
 
 def get_training_and_testing_data(csv_file):
     data = pd.read_csv(csv_file)
+    data['label'] += 1  # labels should be >= 0
     lemmatizer = WordNetLemmatizer()
-
     data['text'] = [data['text'][i].translate(str.maketrans('', '', string.punctuation)) for i in range(len(data))]
     data['text'] = [data['text'][i].lower() for i in range(len(data))]
     data['text'] = [data['text'][i].strip() for i in range(len(data))]
@@ -26,6 +26,7 @@ def get_training_and_testing_data(csv_file):
     data['text'] = [word_tokenize(data['text'][i]) for i in range(len(data))]
     data['text'] = [[word for word in data['text'][i] if not word in stop_words] for i in range(len(data))]
     data['text'] = [[lemmatizer.lemmatize(word) for word in data['text'][i]] for i in range(len(data))]
+    data['text'] = [" ".join(data['text'][i]) for i in range(len(data))]
     data = data.sample(len(data))
     train = data.iloc[:5500, :]
     test = data.iloc[5500:, :]

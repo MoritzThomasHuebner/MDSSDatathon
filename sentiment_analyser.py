@@ -55,22 +55,22 @@ def load_and_train_data():
     # Setup the 'feature'
     embedded_text_feature_column = hub.text_embedding_column(
         key='text',
-        module_spec=tf_mods.NNLM,
+        module_spec=tf_mods.SCENTENCE_ENCODER_800MB,
         trainable=True)
 
     # Setup the DNN classifier
     estimator = tf.estimator.DNNClassifier(
-        hidden_units=[512, 256],
+        hidden_units=[51],
         feature_columns=[embedded_text_feature_column],
         n_classes=3,
-        dropout=0.2,
+        # dropout=0.2,
         optimizer=tf.train.AdagradOptimizer(learning_rate=0.003))
         # ,
         #                                             initial_accumulator_value=0.1,
         #                                             l1_regularization_strength=0.0,
         #                                             l2_regularization_strength=0.0,
         #                                             use_locking=False))
-
+    # from sklearn.ensemble import
     # Training for 1,000 steps means 128,000 training eg with the default batch size.
     # number epochs = 128,000/len(train)
     estimator.train(input_fn=train_input_fn, steps=1000)

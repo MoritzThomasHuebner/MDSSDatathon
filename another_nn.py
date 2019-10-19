@@ -11,8 +11,6 @@ import tensorflow as tf
 import pandas as pd
 
 import tensorflow_hub as hub
-import tensorflow_datasets as tfds
-import matplotlib
 from matplotlib import pyplot as plt
 
 print("Version: ", tf.__version__)

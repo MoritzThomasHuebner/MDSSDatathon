@@ -10,6 +10,7 @@ import os
 import pandas as pd
 import re
 import seaborn as sns
+from cleaning import get_training_and_testing_data
 
 
 # preprocess (clean) data here
@@ -30,7 +31,7 @@ def load_datasets():
 def load_and_train_data():
     # # Reduce logging output.
     # tf.logging.set_verbosity(tf.logging.ERROR)
-    train_df, test_df = load_datasets()
+    train_df, test_df = get_training_and_testing_data('train_data.csv')
 
     # Format the data
     # Training input on the whole training set with no limit on training epochs.
@@ -59,10 +60,12 @@ def load_and_train_data():
 
     # Training for 1,000 steps means 128,000 training eg with the default batch size.
     # number epochs = 128,000/len(train)
-    estimator.train(input_fn=train_input_fn, steps=100)
+    estimator.train(input_fn=train_input_fn, steps=1000)
 
     train_eval_result = estimator.evaluate(input_fn=predict_train_input_fn)
     test_eval_result = estimator.evaluate(input_fn=predict_test_input_fn)
 
     print("Training set accuracy: {accuracy}".format(**train_eval_result))
     print("Test set accuracy: {accuracy}".format(**test_eval_result))
+
+load_and_train_data()

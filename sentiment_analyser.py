@@ -4,6 +4,8 @@
 
 import tensorflow as tf
 import tensorflow_hub as hub
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import os

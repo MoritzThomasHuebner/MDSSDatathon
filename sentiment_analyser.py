@@ -56,7 +56,7 @@ def load_and_train_data():
         trainable=True)
 
     # Setup the DNN classifier
-    estimator = tf.estimator.ProximateDNNClassifier(
+    estimator = tf.estimator.DNNClassifier(
         hidden_units=[500, 100],
         feature_columns=[embedded_text_feature_column],
         n_classes=3,

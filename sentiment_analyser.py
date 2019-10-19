@@ -57,10 +57,15 @@ def load_and_train_data():
 
     # Setup the DNN classifier
     estimator = tf.estimator.DNNClassifier(
-        hidden_units=[500, 100],
+        hidden_units=[1024, 512, 256],
         feature_columns=[embedded_text_feature_column],
         n_classes=3,
-        optimizer=tf.train.ProximalAdagradOptimizer(learning_rate=0.003))
+        dropout=0.2,
+        optimizer=tf.train.ProximalAdagradOptimizer(learning_rate=0.003,
+                                                    initial_accumulator_value=0.1,
+                                                    l1_regularization_strength=0.1,
+                                                    l2_regularization_strength=0.1,
+                                                    use_locking=False))
 
     # Training for 1,000 steps means 128,000 training eg with the default batch size.
     # number epochs = 128,000/len(train)
@@ -72,11 +77,9 @@ def load_and_train_data():
     print("Training set accuracy: {accuracy}".format(**train_eval_result))
     print("Test set accuracy: {accuracy}".format(**test_eval_result))
 
-
     save_predicitions(estimator, "submission.csv")
 
     return estimator, train_df, test_df, predict_train_input_fn, predict_test_input_fn
-
 
 
 def save_predicitions(estimator, sub_fn):
@@ -85,16 +88,16 @@ def save_predicitions(estimator, sub_fn):
     submission_input_fn = tf.estimator.inputs.pandas_input_fn(
         submission_df, shuffle=False)
     pred = get_predictions(estimator, submission_input_fn)
-    submission_df['label'] = pred
+    submission_df['label'] = [p - 1 for p in pred]
     submission_df = submission_df[['test_id', 'label']]
-    submission_df.to_csv(sub_fn)
+    submission_df.to_csv(sub_fn, index=False)
 
 
 def get_predictions(estimator, input_fn):
     return [x["class_ids"][0] for x in estimator.predict(input_fn=input_fn)]
 
 
-def make_confusion_matrix_plot(estimator, train_df, predict_train_input_fn):
+def make_confusion_matrix_plot(estimator, train_df, predict_train_input_fn, filename):
     LABELS = [
         "negative", "neutral", "positive"
     ]
@@ -112,11 +115,12 @@ def make_confusion_matrix_plot(estimator, train_df, predict_train_input_fn):
     sns.heatmap(cm_out, annot=True, xticklabels=LABELS, yticklabels=LABELS)
     plt.xlabel("Predicted")
     plt.ylabel("True")
+    plt.savefig(filename)
     plt.show()
 
 
 # GET PREDICTION
 estimator, train_df, test_df, predict_train_input_fn, predict_test_input_fn = load_and_train_data()
-make_confusion_matrix_plot(estimator, train_df, predict_train_input_fn)
-make_confusion_matrix_plot(estimator, test_df, predict_test_input_fn)
+make_confusion_matrix_plot(estimator, train_df, predict_train_input_fn, 'train_confusion.png')
+make_confusion_matrix_plot(estimator, test_df, predict_test_input_fn, 'test_confusion.png')
 

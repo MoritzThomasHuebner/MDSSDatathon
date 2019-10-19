@@ -12,6 +12,7 @@
 #SBATCH --reservation=ml
 
 # Load the modules
+module load python
 module load numpy/1.14.1-python-2.7.14
 module load tensorflowgpu/1.6.0-python-2.7.14
 module load scikit-learn/0.19.1-python-2.7.14

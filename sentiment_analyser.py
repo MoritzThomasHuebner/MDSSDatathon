@@ -64,11 +64,12 @@ def load_and_train_data():
         feature_columns=[embedded_text_feature_column],
         n_classes=3,
         dropout=0.2,
-        optimizer=tf.train.ProximalAdagradOptimizer(learning_rate=0.003,
-                                                    initial_accumulator_value=0.1,
-                                                    l1_regularization_strength=0.1,
-                                                    l2_regularization_strength=0.1,
-                                                    use_locking=False))
+        optimizer=tf.train.AdagradOptimizer(learning_rate=0.003))
+        # ,
+        #                                             initial_accumulator_value=0.1,
+        #                                             l1_regularization_strength=0.0,
+        #                                             l2_regularization_strength=0.0,
+        #                                             use_locking=False))
 
     # Training for 1,000 steps means 128,000 training eg with the default batch size.
     # number epochs = 128,000/len(train)
@@ -120,6 +121,7 @@ def make_confusion_matrix_plot(estimator, train_df, predict_train_input_fn, file
     plt.ylabel("True")
     plt.savefig(filename)
     plt.show()
+    plt.clf()
 
 
 # GET PREDICTION

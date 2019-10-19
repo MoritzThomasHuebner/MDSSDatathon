@@ -55,7 +55,7 @@ def load_and_train_data():
     # Setup the 'feature'
     embedded_text_feature_column = hub.text_embedding_column(
         key='text',
-        module_spec=tf_mods.SCENTENCE_ENCODER,
+        module_spec=tf_mods.ELMO,
         trainable=True)
 
     # Setup the DNN classifier

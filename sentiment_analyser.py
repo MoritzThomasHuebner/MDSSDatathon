@@ -35,18 +35,19 @@ def load_and_train_data():
     # Format the data
     # Training input on the whole training set with no limit on training epochs.
     train_input_fn = tf.estimator.inputs.pandas_input_fn(
-        train_df, train_df["polarity"], num_epochs=None, shuffle=True)
+        train_df, train_df['label'], num_epochs=None, shuffle=True)
 
     # Prediction on the whole training set.
     predict_train_input_fn = tf.estimator.inputs.pandas_input_fn(
-        train_df, train_df["polarity"], shuffle=False)
+        train_df, train_df['label'], shuffle=False)
+
     # Prediction on the test set.
     predict_test_input_fn = tf.estimator.inputs.pandas_input_fn(
-        test_df, test_df["polarity"], shuffle=False)
+        test_df, test_df['label'], shuffle=False)
 
     # Setup the 'feature'
     embedded_text_feature_column = hub.text_embedding_column(
-        key="sentence",
+        key='text',
         module_spec="https://tfhub.dev/google/nnlm-en-dim128/1")
 
     # Setup the DNN classifier

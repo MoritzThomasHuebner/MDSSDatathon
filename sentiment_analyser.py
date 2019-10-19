@@ -54,9 +54,10 @@ def load_and_train_data():
 
     # Setup the DNN classifier
     estimator = tf.estimator.DNNClassifier(
-        hidden_units=[500, 100],
+        hidden_units=[500, 300, 100],
         feature_columns=[embedded_text_feature_column],
         n_classes=3,
+        dropout=0.2,
         optimizer=tf.train.AdagradOptimizer(learning_rate=0.003))
 
     # Training for 1,000 steps means 128,000 training eg with the default batch size.

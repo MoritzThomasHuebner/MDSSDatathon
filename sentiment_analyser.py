@@ -36,8 +36,8 @@ def load_datasets():
 
 
 def load_and_train_data():
-    # train_df, test_df = load_datasets()
-    train_df, test_df = get_training_and_testing_data('train_data.csv')
+    train_df, test_df = load_datasets()
+    # train_df, test_df = get_training_and_testing_data('train_data.csv')
 
     # Format the data
     # Training input on the whole training set with no limit on training epochs.

@@ -12,6 +12,9 @@ import re
 import seaborn as sns
 
 
+# # Reduce logging output.
+# tf.logging.set_verbosity(tf.logging.ERROR)
+
 # preprocess (clean) data here
 def load_dataset(path):
     df = pd.read_csv(path)
@@ -28,8 +31,6 @@ def load_datasets():
 
 
 def load_and_train_data():
-    # # Reduce logging output.
-    # tf.logging.set_verbosity(tf.logging.ERROR)
     train_df, test_df = load_datasets()
 
     # Format the data
@@ -67,11 +68,24 @@ def load_and_train_data():
     print("Training set accuracy: {accuracy}".format(**train_eval_result))
     print("Test set accuracy: {accuracy}".format(**test_eval_result))
 
+    save_predicitions(estimator, "submission.csv")
+
     return estimator
 
 
+def save_predicitions(estimator, sub_fn):
+    submission_df = pd.read_csv("test_data.csv")
+    submission_df = submission_df[['test_id', 'text']]
+    submission_input_fn = tf.estimator.inputs.pandas_input_fn(
+        submission_df, shuffle=False)
+    pred = get_predictions(estimator, submission_input_fn)
+    submission_df['label'] = pred
+    submission_df = submission_df[['test_id', 'label']]
+    submission_df.to_csv(sub_fn)
+
+
 def get_predictions(estimator, input_fn):
-  return [x["class_ids"][0] for x in estimator.predict(input_fn=input_fn)]
+    return [x["class_ids"][0] for x in estimator.predict(input_fn=input_fn)]
 
 
 def make_confusion_matrix_plot(estimator, train_df, predict_train_input_fn):
@@ -81,10 +95,10 @@ def make_confusion_matrix_plot(estimator, train_df, predict_train_input_fn):
 
     # Create a confusion matrix on training data.
     with tf.Graph().as_default():
-      cm = tf.confusion_matrix(train_df['label'],
-                               get_predictions(estimator, predict_train_input_fn))
-      with tf.Session() as session:
-        cm_out = session.run(cm)
+        cm = tf.confusion_matrix(train_df['label'],
+                                 get_predictions(estimator, predict_train_input_fn))
+        with tf.Session() as session:
+            cm_out = session.run(cm)
 
     # Normalize the confusion matrix so that each row sums to 1.
     cm_out = cm_out.astype(float) / cm_out.sum(axis=1)[:, np.newaxis]
@@ -92,7 +106,3 @@ def make_confusion_matrix_plot(estimator, train_df, predict_train_input_fn):
     sns.heatmap(cm_out, annot=True, xticklabels=LABELS, yticklabels=LABELS)
     plt.xlabel("Predicted")
     plt.ylabel("True")
-
-
-# GET PREDICTION
-get_predictions(estimator, predict_train_input_fn)

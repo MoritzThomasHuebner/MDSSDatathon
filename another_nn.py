@@ -45,9 +45,6 @@ def print_my_tensor(tensor):
         print(slice)
 
 
-
-
-
 def get_compiled_model():
     embedding = "https://tfhub.dev/google/tf2-preview/gnews-swivel-20dim/1"
     embedding_nnlm = "https://tfhub.dev/google/tf2-preview/nnlm-en-dim128/1"

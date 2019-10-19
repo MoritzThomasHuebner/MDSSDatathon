@@ -56,11 +56,11 @@ def load_and_train_data():
         trainable=True)
 
     # Setup the DNN classifier
-    estimator = tf.estimator.DNNClassifier(
+    estimator = tf.estimator.ProximateDNNClassifier(
         hidden_units=[500, 100],
         feature_columns=[embedded_text_feature_column],
         n_classes=3,
-        optimizer=tf.train.AdagradOptimizer(learning_rate=0.003))
+        optimizer=tf.train.ProximalAdagradOptimizer(learning_rate=0.003))
 
     # Training for 1,000 steps means 128,000 training eg with the default batch size.
     # number epochs = 128,000/len(train)
